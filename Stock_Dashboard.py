@@ -38,23 +38,20 @@ if ticker:
             annualized_return = (data['% Change'].mean() * 252)
             st.write(f'Annualized Return: {annualized_return:.2f}%')
 
-            # Create tabs for different data sections
-            tab1, tab2, tab3 = st.tabs(["Pricing Data", "Fundamental Data", "Top 10 News"])
+            # Create tab for different data sections
+            tab1 = st.tabs(["Pricing Data"])
 
             # Pricing Data tab
-            with tab1:
-                st.write('Pricing Data')
-                st.write(data)
-
-            # Fundamental Data tab
-            with tab2:
-                st.write('Fundamental Data')
-                # You can add fundamental data here
-
-            # Top 10 News tab
-            with tab3:
-                st.write('Top 10 News')
-                # You can add news data here
+            with tab1[0]:
+                st.header('Price Movements')
+                data2 = data.copy()
+                data2['% Change'] = data2['Adj Close'].shift(1)
+                data2.dropna(inplace=True)
+                st.write(data2)
+                st.write('The Annual Return is ', annualized_return, '%')
+                stdev = np.std(data2['% Change'])*np.sqrt(252)
+                st.write('The Standard Deviation is ', stdev)
+                st.write('The Adjusted Risk Return is ', annualized_return/(stdev*100))
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
